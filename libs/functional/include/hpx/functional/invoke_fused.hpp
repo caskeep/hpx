@@ -21,11 +21,9 @@ namespace hpx { namespace util {
     ///////////////////////////////////////////////////////////////////////////
     namespace detail {
         template <typename Tuple>
-        struct fused_index_pack
-          : make_index_pack<
-                util::tuple_size<typename std::decay<Tuple>::type>::value>
-        {
-        };
+        using fused_index_pack =
+            make_index_pack<util::tuple_size<typename std::remove_cv<
+                typename std::remove_reference<Tuple>::type>::type>::value>;
 
         ///////////////////////////////////////////////////////////////////////
         template <typename F, typename Tuple, typename Is>
@@ -65,11 +63,8 @@ namespace hpx { namespace util {
 #endif
 
         template <typename F, typename Tuple>
-        struct invoke_fused_result
-          : invoke_fused_result_impl<F, Tuple&&,
-                typename fused_index_pack<Tuple>::type>
-        {
-        };
+        using invoke_fused_result = invoke_fused_result_impl<F, Tuple&&,
+            typename fused_index_pack<Tuple>::type>;
 
         ///////////////////////////////////////////////////////////////////////
         template <std::size_t... Is, typename F, typename Tuple>
